@@ -22,6 +22,6 @@ mkdir -p /data/hdfs/datanode
 
 echo "=== Setting permissions ==="
 
-chown -R root:root /data/hdfs
+chown -R team:team /data/hdfs
 
 echo "=== Configuration completed ==="
