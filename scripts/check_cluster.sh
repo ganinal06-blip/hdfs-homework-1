@@ -28,8 +28,8 @@ LOG_DIR="/opt/hadoop/logs"
 if [ -d "$LOG_DIR" ]; then
 
     ERRORS=$(grep -Ei "FATAL|ERROR" "$LOG_DIR"/* 2>/dev/null | \
-        grep -v "Received signal 15" | \
-        head -20 || true)
+       grep -vi "received signal 15" | \
+       head -20 || true)
 
     if [ -z "$ERRORS" ]; then
         echo "No critical errors found."
