@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+    <property>
+        <name>dfs.replication</name>
+        <value>3</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///data/hdfs/namenode</value>
+    </property>
+
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///data/hdfs/datanode</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.rpc-address</name>
+        <value>team-12-nn:9000</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>team-12-nn:9870</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>team-12-nn:9868</value>
+    </property>
+
+</configuration>
