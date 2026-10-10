@@ -3,4 +3,3 @@
 *.tmp
 .idea/
 .vscode/
-__pycache__/
