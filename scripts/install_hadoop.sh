@@ -1,27 +1,20 @@
 #!/bin/bash
-
 set -e
 
 HADOOP_VERSION="3.4.2"
 HADOOP_HOME="/opt/hadoop"
-HADOOP_ARCHIVE="/tmp/hadoop-${HADOOP_VERSION}.tar.gz"
-HADOOP_URL="https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz"
-
-echo "=== Installing Java ==="
+ARCHIVE="/tmp/hadoop-${HADOOP_VERSION}.tar.gz"
+URL="https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz"
 
 apt-get update
 apt-get install -y openjdk-17-jdk wget
 
-echo "=== Installing Hadoop ${HADOOP_VERSION} ==="
-
 if [ ! -d "/opt/hadoop-${HADOOP_VERSION}" ]; then
-    wget -O "${HADOOP_ARCHIVE}" "${HADOOP_URL}"
-    tar -xzf "${HADOOP_ARCHIVE}" -C /opt
+  wget -O "$ARCHIVE" "$URL"
+  tar -xzf "$ARCHIVE" -C /opt
 fi
 
-ln -sfn "/opt/hadoop-${HADOOP_VERSION}" "${HADOOP_HOME}"
-
-echo "=== Setting environment ==="
+ln -sfn "/opt/hadoop-${HADOOP_VERSION}" "$HADOOP_HOME"
 
 cat > /etc/profile.d/hadoop.sh <<EOF
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
@@ -31,9 +24,4 @@ export PATH=\$PATH:\$HADOOP_HOME/bin:\$HADOOP_HOME/sbin
 EOF
 
 source /etc/profile.d/hadoop.sh
-
-echo "=== Hadoop version ==="
-
 hadoop version
-
-echo "=== Installation completed ==="
