@@ -1,48 +1,30 @@
 #!/bin/bash
 
-echo "========================================"
-echo "        HDFS CLUSTER CHECK"
-echo "========================================"
-
-echo
-echo "=== Hadoop version ==="
+echo "version:"
 hadoop version | head -n 1
-
 echo
-echo "=== Running Hadoop processes ==="
+
+echo "processes:"
 jps
-
 echo
-echo "=== HDFS report ==="
+
+echo "hdfs report:"
 hdfs dfsadmin -report
-
 echo
-echo "=== Filesystem check ==="
+
+echo "fsck:"
 hdfs fsck / -files -blocks -locations
-
 echo
-echo "=== Checking critical errors in logs ==="
 
+echo "logs check:"
 LOG_DIR="/opt/hadoop/logs"
-
 if [ -d "$LOG_DIR" ]; then
-
-    ERRORS=$(grep -Ei "FATAL|ERROR" "$LOG_DIR"/* 2>/dev/null | \
-       grep -vi "received signal 15" | \
-       head -20 || true)
-
-    if [ -z "$ERRORS" ]; then
-        echo "No critical errors found."
-    else
-        echo "Possible critical errors:"
-        echo "$ERRORS"
-    fi
-
+  ERRORS=$(grep -Ei "FATAL|ERROR" "$LOG_DIR"/* 2>/dev/null | grep -vi "received signal 15" | head -20 || true)
+  if [ -z "$ERRORS" ]; then
+    echo "no errors"
+  else
+    echo "$ERRORS"
+  fi
 else
-    echo "Hadoop log directory not found."
+  echo "no log dir"
 fi
-
-echo
-echo "========================================"
-echo "        END OF CLUSTER CHECK"
-echo "========================================"
