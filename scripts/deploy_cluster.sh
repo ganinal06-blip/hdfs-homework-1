@@ -14,7 +14,7 @@ for HOST in "${DATANODES[@]}"; do
   ssh "$HOST" hostname
 done
 
-if jps | grep -q "NameNode"; then
+if jps 2>/dev/null | grep -qw "NameNode"; then
   echo "namenode already running"
   RUNNING=true
 else
@@ -47,18 +47,20 @@ else
   echo "cluster already running, skip install"
 fi
 
+source /etc/profile.d/hadoop.sh
+
 if [ ! -f "/data/hdfs/namenode/current/VERSION" ]; then
   echo "namenode not formatted"
   read -p "format? type FORMAT: " CONFIRM
   if [ "$CONFIRM" = "FORMAT" ]; then
-    sudo bash "$PROJECT_DIR/scripts/format_namenode.sh"
+    bash "$PROJECT_DIR/scripts/format_namenode.sh"
   else
     echo "skip format, exit"
     exit 0
   fi
 fi
 
-LIVE=$(hdfs dfsadmin -report 2>/dev/null | awk '/Live datanodes/ {gsub(/[()]/, "", $3); print $3}')
+LIVE=$(hdfs dfsadmin -report 2>/dev/null | awk '/Live datanodes/ {gsub(/[():]/, "", $3); print $3}')
 if [ "$LIVE" = "3" ]; then
   echo "3 datanodes live, skip start"
 else
