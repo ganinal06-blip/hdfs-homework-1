@@ -101,5 +101,3 @@ Under-replicated blocks: 0
 ```
 
 В Web UI NameNode 3 живых DataNode, деградировавших нет. В логах критических ошибок нет.
-Тестовый файл `/user/team/test/hdfs-test.txt` записан с фактором репликации 3 —
-по одной реплике на каждой DataNode.
