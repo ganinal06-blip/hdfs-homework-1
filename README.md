@@ -29,15 +29,38 @@ scripts/
   check_cluster.sh      проверка состояния
 ```
 
-## Запуск
+## Настройка SSH
 
-Сначала нужен SSH без пароля с NameNode на все DataNode:
+Вход на кластер через edge-ноду, внутренние узлы доступны только с неё по ключу `team_internal`:
+
+```bash
+ssh team@171.22.72.54
+scp -i ~/.ssh/team_internal ~/.ssh/team_internal team@team-12-nn:~/.ssh/
+ssh -i ~/.ssh/team_internal team@team-12-nn
+```
+
+На `team-12-nn` настраиваем ssh config, чтобы скрипты и `start-dfs.sh` ходили по узлам
+без указания ключа:
+
+```bash
+cat > ~/.ssh/config <<'EOF'
+Host team-12-en team-12-nn team-12-00 team-12-01
+    User team
+    IdentityFile ~/.ssh/team_internal
+    StrictHostKeyChecking accept-new
+EOF
+chmod 600 ~/.ssh/config ~/.ssh/team_internal
+```
+
+Проверяем, что подключение идёт без пароля:
 
 ```bash
 ssh team-12-en hostname
 ssh team-12-00 hostname
 ssh team-12-01 hostname
 ```
+
+## Запуск
 
 Дальше всё делает один скрипт, запускать с `team-12-nn`:
 
@@ -87,17 +110,39 @@ ssh -L 9870:team-12-nn:9870 team@171.22.72.54
 `hdfs dfsadmin -report`:
 
 ```text
-Live datanodes (3)
-Dead datanodes (0)
+Live datanodes (3):
+
+Name: 10.12.0.10:9866 (team-12-en)
+Decommission Status : Normal
+
+Name: 10.12.0.12:9866 (team-12-00)
+Decommission Status : Normal
+
+Name: 10.12.0.13:9866 (team-12-01)
+Decommission Status : Normal
+
+Under replicated blocks: 0
+Blocks with corrupt replicas: 0
+Missing blocks: 0
 ```
 
 `hdfs fsck /`:
 
 ```text
+/user/team/test/hdfs-test.txt 18 bytes, replicated: replication=3, 1 block(s):  OK
+
 Status: HEALTHY
-Missing blocks: 0
-Corrupt blocks: 0
-Under-replicated blocks: 0
+ Number of data-nodes: 3
+ Default replication factor: 3
+ Average block replication: 3.0
+ Missing blocks: 0
+ Corrupt blocks: 0
 ```
 
 В Web UI NameNode 3 живых DataNode, деградировавших нет. В логах критических ошибок нет.
+Тестовый файл `/user/team/test/hdfs-test.txt` записан с фактором репликации 3 —
+по одной реплике на каждой DataNode.
+
+![dfsadmin report](docs/dfsadmin-report.png)
+
+![fsck](docs/fsck.png)
