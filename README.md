@@ -143,6 +143,8 @@ Status: HEALTHY
 Тестовый файл `/user/team/test/hdfs-test.txt` записан с фактором репликации 3 —
 по одной реплике на каждой DataNode.
 
+![namenode](namenode.jpeg)
+
 ![dfsadmin report](dfsadmin_report.jpeg)
 
 ![fsck](fsck.jpeg)
